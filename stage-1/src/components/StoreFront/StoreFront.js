@@ -7,34 +7,40 @@ class StoreFront extends Component {
         super();
 
         this.state = {
-            products: []
+            products: null
         }
     }
 
     componentDidMount() {
         axios.get("https://practiceapi.devmountain.com/products/")
             .then((response) => {
+                // console.log(response.data)
                 this.setState({
-                    products: response
+                    products: response.data
                 })
+                // console.log(this.state.products)
             })
     }
 
+     productDisplay(){ var product = this.state.products.map((element, index) => {
+        return (
+            <div className="product-container" key={index}>
+                <h2>{element.title}</h2>
+                <img src={element.image} alt="" />
+                <h2>{element.desc}</h2>
+                <h3>{"$" + element.price + ".00"}</h3>
+                <button onClick={() => this.props.addToShoppingCart(element)}>Purchase!</button>
+            </div>
+        )
+    })
+    console.log(product)
+    return product;
+}
     render() {
-        let productDisplay = this.state.products.map((element, index) => {
-            return (
-                <div className="product-container" key={index}>
-                    <h2>{element.title}</h2>
-                    <img src={element.image} alt="" />
-                    <h2>{element.desc}</h2>
-                    <h3>{"$" + element.price + ".00"}</h3>
-                    <button onClick={() => this.props.addToShoppingCart(element)}>Purchase!</button>
-                </div>
-            )
-        })
+
         return (
             <div className="storefront-container">
-                {productDisplay}
+                {this.state.products ? this.productDisplay() : null}
             </div>
         )
     }
